@@ -1,0 +1,18 @@
+[Unit]
+Description=gaode CLI MCP server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/gaode/local-deploy/ports.env
+WorkingDirectory=/mnt/mcp/gaode/local-deploy
+EnvironmentFile=/mnt/mcp/gaode/local-deploy/service.env
+EnvironmentFile=-/mnt/mcp/gaode/local-deploy/keys.env
+ExecStart=/mnt/mcp/gaode/.venv/bin/python /mnt/mcp/gaode/local-deploy/server.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

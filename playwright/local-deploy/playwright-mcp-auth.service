@@ -1,0 +1,23 @@
+[Unit]
+Description=Bearer authentication for Playwright MCP
+Requires=playwright-mcp.service
+After=playwright-mcp.service
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/playwright/local-deploy/ports.env
+DynamicUser=true
+User=pw-mcp-proxy
+SupplementaryGroups=playwright-mcp-auth
+WorkingDirectory=/mnt/mcp/playwright/local-deploy
+ExecStart=/usr/bin/node /mnt/mcp/playwright/local-deploy/auth-proxy.cjs
+Restart=on-failure
+RestartSec=5
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

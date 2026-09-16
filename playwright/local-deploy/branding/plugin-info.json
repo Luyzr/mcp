@@ -1,0 +1,5 @@
+{
+  "name": "Playwright 网页助手",
+  "description": "用自然语言操作网页：打开页面、查找信息、点击按钮、填写表单，并生成网页截图或 PDF。适用于资料整理、网页流程验证和重复操作自动化。",
+  "icon": "playwright-icon-256.png"
+}

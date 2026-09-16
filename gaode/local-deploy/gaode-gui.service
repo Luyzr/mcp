@@ -1,0 +1,19 @@
+[Unit]
+Description=Gaode CLI map GUI in virtual display
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/mnt/mcp/gaode/local-deploy/keys.env
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/mcp/gaode/node_modules/@amap-lbs/amap-gui
+EnvironmentFile=/mnt/mcp/gaode/local-deploy/service.env
+EnvironmentFile=/mnt/mcp/gaode/local-deploy/keys.env
+ExecStart=/usr/bin/xvfb-run -a /mnt/mcp/gaode/node_modules/electron/dist/electron --no-sandbox --disable-gpu /mnt/mcp/gaode/node_modules/@amap-lbs/amap-gui/dist/main.js
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=20
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

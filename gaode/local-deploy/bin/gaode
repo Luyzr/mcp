@@ -1,0 +1,6 @@
+#!/bin/sh
+set -a
+. /mnt/mcp/gaode/local-deploy/service.env
+if [ -f /mnt/mcp/gaode/local-deploy/keys.env ]; then . /mnt/mcp/gaode/local-deploy/keys.env; fi
+set +a
+exec /mnt/mcp/gaode/node_modules/.bin/amap-gui "$@"

@@ -1,0 +1,14 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "launchOptions": {
+      "headless": true,
+      "executablePath": "/mnt/mcp/playwright/browsers/chromium_headless_shell-1244/chrome-headless-shell-linux64/chrome-headless-shell",
+      "chromiumSandbox": true
+    }
+  },
+  "outputDir": "/mnt/mcp/playwright/output",
+  "outputMaxSize": 268435456,
+  "capabilities": ["core", "pdf", "vision"]
+}

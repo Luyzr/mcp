@@ -1,0 +1,10 @@
+.venv/
+.python/
+.branding-tools/
+node_modules/
+local-deploy/__pycache__/
+local-deploy/data/
+local-deploy/keys.env
+local-deploy/mcp-authorization
+local-deploy/tunnel.env
+local-deploy/tools.json

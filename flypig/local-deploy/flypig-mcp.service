@@ -1,0 +1,24 @@
+[Unit]
+Description=FlyAI CLI MCP server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/flypig/local-deploy/ports.env
+WorkingDirectory=/mnt/mcp/flypig/local-deploy
+EnvironmentFile=/mnt/mcp/flypig/local-deploy/service.env
+EnvironmentFile=-/mnt/mcp/flypig/local-deploy/keys.env
+Environment=PYTHONPATH=/mnt/mcp/flypig/.python
+ExecStart=/usr/bin/python3 /mnt/mcp/flypig/local-deploy/server.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/mnt/mcp/flypig/local-deploy/data
+
+[Install]
+WantedBy=multi-user.target

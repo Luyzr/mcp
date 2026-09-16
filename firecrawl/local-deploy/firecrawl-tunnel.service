@@ -1,0 +1,25 @@
+[Unit]
+Description=OpenAI Secure MCP Tunnel for Firecrawl
+Wants=network-online.target
+Requires=firecrawl-mcp-auth.service
+After=network-online.target firecrawl-mcp-auth.service
+ConditionPathExists=/mnt/mcp/firecrawl/local-deploy/tunnel.env
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/firecrawl/local-deploy/ports.env
+DynamicUser=true
+SupplementaryGroups=firecrawl-mcp
+WorkingDirectory=/mnt/mcp/firecrawl/local-deploy
+EnvironmentFile=/mnt/mcp/firecrawl/local-deploy/tunnel.env
+ExecStart=/mnt/mcp/firecrawl/local-deploy/bin/tunnel-client run --mcp.server-url http://${MCP_BIND_HOST}:${MCP_PORT}/mcp --mcp.extra-headers "Authorization: file:/mnt/mcp/firecrawl/local-deploy/mcp-authorization" --mcp.discovery-extra-headers "Authorization: file:/mnt/mcp/firecrawl/local-deploy/mcp-authorization" --health.listen-addr ${TUNNEL_HEALTH_HOST}:${TUNNEL_HEALTH_PORT}
+Restart=on-failure
+RestartSec=5
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

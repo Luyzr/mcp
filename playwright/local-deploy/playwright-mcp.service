@@ -1,0 +1,25 @@
+[Unit]
+Description=Playwright MCP browser service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/playwright/local-deploy/ports.env
+User=playwright-mcp
+Group=playwright-mcp
+WorkingDirectory=/mnt/mcp/playwright/output
+Environment=HOME=/mnt/mcp/playwright/home
+Environment=PLAYWRIGHT_BROWSERS_PATH=/mnt/mcp/playwright/browsers
+ExecStart=/usr/bin/node /mnt/mcp/playwright/node_modules/@playwright/mcp/cli.js --config /mnt/mcp/playwright/local-deploy/config.json --host ${MCP_BACKEND_HOST} --port ${MCP_BACKEND_PORT}
+Restart=on-failure
+RestartSec=5
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/mnt/mcp/playwright/home /mnt/mcp/playwright/output
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

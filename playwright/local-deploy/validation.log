@@ -1,0 +1,10 @@
+SSE response headers within 2s PASS
+tools/list: 33
+browser_navigate PASS
+browser_evaluate PASS
+browser_snapshot PASS
+browser_click PASS
+browser_snapshot PASS
+browser_take_screenshot PASS
+browser_close PASS
+PASS: authentication, MCP handshake, tools, HTTPS navigation, DOM interaction, snapshot, screenshot, browser close

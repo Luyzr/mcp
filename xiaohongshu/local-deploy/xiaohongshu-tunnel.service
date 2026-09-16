@@ -1,0 +1,18 @@
+[Unit]
+Description=OpenAI Secure MCP Tunnel for Xiaohongshu
+Wants=network-online.target
+After=network-online.target xiaohongshu-mcp.service
+ConditionPathExists=/mnt/mcp/xiaohongshu/local-deploy/tunnel.env
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/xiaohongshu/local-deploy/ports.env
+WorkingDirectory=/mnt/mcp/xiaohongshu/local-deploy
+EnvironmentFile=/mnt/mcp/xiaohongshu/local-deploy/tunnel.env
+ExecStart=/mnt/mcp/xiaohongshu/local-deploy/bin/tunnel-client run --mcp.server-url http://${MCP_BIND_HOST}:${MCP_PORT}/mcp --mcp.extra-headers "Authorization: file:/mnt/mcp/xiaohongshu/local-deploy/mcp-authorization" --mcp.discovery-extra-headers "Authorization: file:/mnt/mcp/xiaohongshu/local-deploy/mcp-authorization" --health.listen-addr ${TUNNEL_HEALTH_HOST}:${TUNNEL_HEALTH_PORT}
+Restart=on-failure
+RestartSec=10
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

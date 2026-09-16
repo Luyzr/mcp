@@ -1,0 +1,32 @@
+# Secrets and local configuration
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+**/*keys.env
+**/*service.env
+**/*tunnel.env
+**/ports.env
+**/mcp-authorization
+**/cookies/
+
+# Dependencies and virtual environments
+**/node_modules/
+**/.venv/
+**/.python/
+
+# Generated output and caches
+**/.pytest_cache/
+**/__pycache__/
+**/dist/
+**/output/
+**/browsers/
+playwright/home/
+**/local-deploy/cache/
+**/local-deploy/downloads/
+**/local-deploy/runtime/
+**/local-deploy/data/
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db

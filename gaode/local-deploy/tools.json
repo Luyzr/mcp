@@ -1,0 +1,218 @@
+{
+  "meta": null,
+  "nextCursor": null,
+  "tools": [
+    {
+      "name": "gaode_help",
+      "title": null,
+      "description": "Show CLI commands or exact arguments for one command. Call before using unfamiliar options.",
+      "inputSchema": {
+        "properties": {
+          "command": {
+            "default": "",
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "title": "cli_helpArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": true,
+        "destructiveHint": null,
+        "idempotentHint": null,
+        "openWorldHint": null
+      },
+      "meta": null,
+      "execution": null
+    },
+    {
+      "name": "gaode_status",
+      "title": null,
+      "description": "Check map GUI status Pass CLI arguments as a string array; consult the help tool for flags.",
+      "inputSchema": {
+        "properties": {
+          "arguments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Arguments"
+          }
+        },
+        "title": "invokeArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "meta": null,
+      "execution": null
+    },
+    {
+      "name": "gaode_getLastEvent",
+      "title": null,
+      "description": "Read last map event Pass CLI arguments as a string array; consult the help tool for flags.",
+      "inputSchema": {
+        "properties": {
+          "arguments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Arguments"
+          }
+        },
+        "title": "invokeArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "meta": null,
+      "execution": null
+    },
+    {
+      "name": "gaode_mapState",
+      "title": null,
+      "description": "Read or change map view Pass CLI arguments as a string array; consult the help tool for flags.",
+      "inputSchema": {
+        "properties": {
+          "arguments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Arguments"
+          }
+        },
+        "title": "invokeArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "meta": null,
+      "execution": null
+    },
+    {
+      "name": "gaode_route",
+      "title": null,
+      "description": "Plan a driving, walking, riding or transit route on the map Pass CLI arguments as a string array; consult the help tool for flags.",
+      "inputSchema": {
+        "properties": {
+          "arguments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Arguments"
+          }
+        },
+        "title": "invokeArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "meta": null,
+      "execution": null
+    },
+    {
+      "name": "gaode_searchPOI",
+      "title": null,
+      "description": "Search places and show them on the map Pass CLI arguments as a string array; consult the help tool for flags.",
+      "inputSchema": {
+        "properties": {
+          "arguments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Arguments"
+          }
+        },
+        "title": "invokeArguments",
+        "type": "object"
+      },
+      "outputSchema": null,
+      "icons": null,
+      "annotations": {
+        "title": null,
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "meta": null,
+      "execution": null
+    }
+  ]
+}

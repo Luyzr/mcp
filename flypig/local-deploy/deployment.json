@@ -1,0 +1,25 @@
+{
+  "service": "flypig",
+  "network_configuration": "stored outside version control",
+  "flyai_package": "@fly-ai/flyai-cli",
+  "flyai_version": "1.0.16",
+  "mcp_version": "1.30.0",
+  "transport": "streamable-http",
+  "bind": "127.0.0.1",
+  "bearer_auth": true,
+  "api_key_configured": true,
+  "tunnel_configured": true,
+  "verified_at": "2026-09-16T09:28:21+08:00",
+  "tool_count": 10,
+  "validation": {
+    "mcp_initialize": true,
+    "tool_discovery": true,
+    "auth_rejection": true,
+    "unit_tests": 5,
+    "live_flight_search": true,
+    "live_flight_candidate_count": 6,
+    "tunnel_health": "live",
+    "tunnel_readiness": "ready",
+    "live_query": "2026-09-25 上海到丽江，13:00前到达，价格升序"
+  }
+}

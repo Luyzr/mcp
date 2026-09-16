@@ -1,0 +1,21 @@
+[Unit]
+Description=Bearer authentication for Firecrawl MCP
+Wants=firecrawl-mcp.service
+After=firecrawl-mcp.service
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/firecrawl/local-deploy/ports.env
+User=firecrawl-mcp
+Group=firecrawl-mcp
+ExecStart=/mnt/mcp/firecrawl/local-deploy/runtime/node/bin/node /mnt/mcp/firecrawl/local-deploy/auth-proxy.cjs
+Restart=on-failure
+RestartSec=5
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

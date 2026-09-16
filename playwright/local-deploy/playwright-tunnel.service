@@ -1,0 +1,25 @@
+[Unit]
+Description=OpenAI Secure MCP Tunnel for Playwright
+Wants=network-online.target
+Requires=playwright-mcp-auth.service
+After=network-online.target playwright-mcp-auth.service
+ConditionPathExists=/mnt/mcp/playwright/local-deploy/tunnel.env
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/playwright/local-deploy/ports.env
+DynamicUser=true
+SupplementaryGroups=playwright-mcp-auth
+WorkingDirectory=/mnt/mcp/playwright/local-deploy
+EnvironmentFile=/mnt/mcp/playwright/local-deploy/tunnel.env
+ExecStart=/mnt/mcp/playwright/local-deploy/bin/tunnel-client run --mcp.server-url http://${MCP_BIND_HOST}:${MCP_PORT}/mcp --mcp.extra-headers "Authorization: file:/mnt/mcp/playwright/local-deploy/mcp-authorization" --mcp.discovery-extra-headers "Authorization: file:/mnt/mcp/playwright/local-deploy/mcp-authorization" --health.listen-addr ${TUNNEL_HEALTH_HOST}:${TUNNEL_HEALTH_PORT}
+Restart=on-failure
+RestartSec=10
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

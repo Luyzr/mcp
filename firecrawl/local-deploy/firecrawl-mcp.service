@@ -1,0 +1,25 @@
+[Unit]
+Description=Firecrawl MCP using Firecrawl cloud API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/firecrawl/local-deploy/ports.env
+User=firecrawl-mcp
+Group=firecrawl-mcp
+WorkingDirectory=/mnt/mcp/firecrawl
+EnvironmentFile=/mnt/mcp/firecrawl/.env
+Environment=HTTP_STREAMABLE_SERVER=true
+Environment=FIRECRAWL_API_URL=https://api.firecrawl.dev
+ExecStart=/mnt/mcp/firecrawl/local-deploy/runtime/node/bin/node /mnt/mcp/firecrawl/dist/index.js
+Restart=on-failure
+RestartSec=5
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

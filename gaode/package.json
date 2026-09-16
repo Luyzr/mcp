@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@amap-lbs/amap-gui": "^1.0.3"
+  }
+}

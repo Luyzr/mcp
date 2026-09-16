@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenAI Secure MCP Tunnel for Flypig
+Wants=network-online.target
+Requires=flypig-mcp.service
+After=network-online.target flypig-mcp.service
+ConditionPathExists=/mnt/mcp/flypig/local-deploy/tunnel.env
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/flypig/local-deploy/ports.env
+WorkingDirectory=/mnt/mcp/flypig/local-deploy
+EnvironmentFile=/mnt/mcp/flypig/local-deploy/tunnel.env
+ExecStart=/mnt/mcp/flypig/local-deploy/bin/tunnel-client run --mcp.server-url http://${MCP_BIND_HOST}:${MCP_PORT}/mcp --mcp.extra-headers "Authorization: file:/mnt/mcp/flypig/local-deploy/mcp-authorization" --mcp.discovery-extra-headers "Authorization: file:/mnt/mcp/flypig/local-deploy/mcp-authorization" --health.listen-addr ${TUNNEL_HEALTH_HOST}:${TUNNEL_HEALTH_PORT}
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

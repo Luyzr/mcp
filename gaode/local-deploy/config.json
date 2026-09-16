@@ -1,0 +1,26 @@
+{
+  "name": "gaode",
+  "cli": "/mnt/mcp/gaode/node_modules/.bin/amap-gui",
+  "commands": {
+    "status": {
+      "description": "Check map GUI status",
+      "readonly": true
+    },
+    "getLastEvent": {
+      "description": "Read last map event",
+      "readonly": true
+    },
+    "mapState": {
+      "description": "Read or change map view",
+      "readonly": false
+    },
+    "route": {
+      "description": "Plan a driving, walking, riding or transit route on the map",
+      "readonly": false
+    },
+    "searchPOI": {
+      "description": "Search places and show them on the map",
+      "readonly": false
+    }
+  }
+}

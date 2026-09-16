@@ -1,0 +1,18 @@
+[Unit]
+Description=Xiaohongshu MCP v2.5.0
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/mnt/mcp/xiaohongshu/local-deploy/ports.env
+WorkingDirectory=/mnt/mcp/xiaohongshu/local-deploy/data
+EnvironmentFile=/mnt/mcp/xiaohongshu/local-deploy/service.env
+ExecStart=/mnt/mcp/xiaohongshu/local-deploy/bin/xiaohongshu-mcp-linux-amd64 -port ${MCP_BIND_HOST}:${MCP_PORT}
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
