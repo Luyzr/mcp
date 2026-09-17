@@ -1,0 +1,8 @@
+{
+  "name": "Obsidian 知识库",
+  "description": "连接你的 Obsidian 知识库，搜索和阅读笔记、梳理双向链接，并按你的指令创建、更新笔记与管理标签，让知识积累融入日常对话。",
+  "icon": "obsidian-icon-256.jpg",
+  "icon_width": 256,
+  "icon_height": 256,
+  "icon_bytes": 6522
+}
