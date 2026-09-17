@@ -52,25 +52,32 @@ journalctl -u obsidian-mcp --no-pager -n 50
 
 MCP allows note edits throughout the vault, excluding `.git`, `.obsidian`, `.trash`, Git control files and `_AI_INSTRUCTIONS.md`. Existing-note replacement requires its read revision. Permanent deletion and bulk/move/delete tool groups remain disabled. Canvas, Excalidraw, Kanban and Bases tools are enabled.
 
-Git sync is explicit, not automatic. On the server use:
+## Automatic Git sync
+
+`obsidian-git-sync.timer` runs a bidirectional sync every minute on the minute (persistent across reboot). `obsidian-git-sync.service` is oneshot; inactive between runs is normal.
+
+The worker commits local changes, fetches GitHub, previews incoming merges in a private temporary worktree, applies only successful merges, then pushes without force and verifies the remote commit. Git-ignored files are excluded. A lock prevents overlapping runs.
+
+Only incoming changes pause `obsidian-mcp` and `obsidian-tunnel` briefly to avoid MCP writes during a checkout. The originally active units are restarted even on merge failure. Pulled files are made writable by `obsidian-mcp`. Coordinate any direct server edits or manual Git operations with this timer.
+
+Conflicts leave both local and remote commits intact and leave the original notes untouched. The worker records `blocked` and retries next minute; manually resolve the divergence. No force-push, reset or automatic conflict winner is used. Network failures likewise retry; this is eventual consistency, not guaranteed real-time equality. This timer syncs the server vault, not a separate Mac/iPhone vault.
 
 ```sh
-git -c safe.directory=/data/obsidian_library -C /data/obsidian_library status
-git -c safe.directory=/data/obsidian_library -C /data/obsidian_library pull --ff-only
-# Review changes and stage the intended note paths before committing.
-git -c safe.directory=/data/obsidian_library -C /data/obsidian_library add <paths>
-git -c safe.directory=/data/obsidian_library -C /data/obsidian_library commit -m 'Update notes'
-git -c safe.directory=/data/obsidian_library -C /data/obsidian_library push
+systemctl list-timers obsidian-git-sync.timer
+cat /var/lib/obsidian-git-sync/status.json
+journalctl -u obsidian-git-sync.service --no-pager -n 30
+# After manually resolving a conflict:
+systemctl start obsidian-git-sync.service
 ```
 
-Do not pull over concurrent writes; coordinate edits before Git merges. A non-fast-forward pull/push requires explicit conflict resolution. Git operations use the repository-scoped `core.sshCommand` and dedicated key, leaving other repositories' SSH credentials unchanged.
+`test-git-sync.py` verifies local push, remote pull, concurrent non-conflicting merges, ignores/deletions, and conflict preservation against disposable local Git repositories.
 
 ## Rebuild/recovery
 
 Install the pinned Python with `UV_PYTHON_INSTALL_DIR=/opt/obsidian-python uv python install 3.12.13`.
 From `/mnt/mcp/obsidian`, run `uv sync --frozen --python /opt/obsidian-python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12`.
 Restore the vault repository, dedicated Git key, root-only environment file, service user and owned state directories from secure backup. Keep `.git` root-owned mode 0700 and the vault accessible to `obsidian-mcp`.
-Restore the tunnel runtime binary, root-only `tunnel.env` and `mcp-authorization`. Install both checked-in units, run `systemctl daemon-reload` and `systemctl enable --now obsidian-mcp obsidian-tunnel`.
+Restore the tunnel runtime binary, root-only `tunnel.env` and `mcp-authorization`. Install the MCP/tunnel units plus `obsidian-git-sync.service` and `obsidian-git-sync.timer`, run `systemctl daemon-reload` and `systemctl enable --now obsidian-mcp obsidian-tunnel obsidian-git-sync.timer`.
 Verify `/health` and the smoke test; update `SERVER_INVENTORY.md` after service/deployment changes.
 
 Do not regenerate or print existing credentials during routine upgrades. Keep the lockfile pinned, inspect upstream changes, and rerun relevant upstream tests before deployment.

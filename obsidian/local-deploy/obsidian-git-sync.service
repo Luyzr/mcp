@@ -1,0 +1,23 @@
+[Unit]
+Description=Bidirectional Obsidian library Git sync
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/data/obsidian_library /mnt/mcp/obsidian
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/data/obsidian_library
+Environment=GIT_TERMINAL_PROMPT=0
+ExecStart=/usr/bin/python3 /mnt/mcp/obsidian/local-deploy/git-sync.py
+TimeoutStartSec=300
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/data/obsidian_library /var/lib/obsidian-git-sync
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true

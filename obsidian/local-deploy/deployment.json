@@ -9,7 +9,7 @@
   "vault_repository": "https://github.com/Luyzr/obsidian_library",
   "source_repository": "https://github.com/Luyzr/mcp",
   "public_tunnel_configured": true,
-  "git_auto_sync": false,
+  "git_auto_sync": true,
   "verified_at": "2026-09-17",
   "verification": {
     "upstream_tests_passed": 119,
@@ -29,5 +29,19 @@
   "tunnel_health_port": 18077,
   "tunnel_status": "ready",
   "tunnel_client_sha256": "472eb9dd9dd625b4e6023c3b4a5736b3a2e5a1b6dbe9338e001887a64ec992a6",
-  "tunnel_id": "tunnel_6aab5e3f57a4819184e1ed130637ec97"
+  "tunnel_id": "tunnel_6aab5e3f57a4819184e1ed130637ec97",
+  "git_sync": {
+    "direction": "bidirectional",
+    "schedule": "every minute",
+    "timer": "obsidian-git-sync.timer",
+    "conflict_policy": "preserve both commits; no worktree update; retry next minute",
+    "status_file": "/var/lib/obsidian-git-sync/status.json",
+    "integration_tests": 5,
+    "verification": {
+      "scheduled_live_push": true,
+      "local_remote_head_equal": true,
+      "remote_pull_test": "isolated repositories",
+      "conflict_preservation_test": true
+    }
+  }
 }
