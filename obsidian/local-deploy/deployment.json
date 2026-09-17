@@ -1,0 +1,23 @@
+{
+  "service": "obsidian-mcp",
+  "version": "2.1.0",
+  "upstream_commit": "6ccfd391ea1cbfcba65c1e596a40aeee3d7299c6",
+  "transport": "streamable-http",
+  "host": "100.107.152.83",
+  "port": 18076,
+  "vault": "/data/obsidian_library",
+  "vault_repository": "https://github.com/Luyzr/obsidian_library",
+  "source_repository": "https://github.com/Luyzr/mcp",
+  "public_tunnel_configured": false,
+  "git_auto_sync": false,
+  "verified_at": "2026-09-17",
+  "verification": {
+    "upstream_tests_passed": 119,
+    "tool_count": 50,
+    "health": true,
+    "auth_rejection": true,
+    "write_read_search": true,
+    "path_isolation": true,
+    "vault_push": true
+  }
+}

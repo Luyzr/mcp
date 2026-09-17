@@ -1,0 +1,144 @@
+from __future__ import annotations
+
+import time
+
+import pytest
+
+from obsidian_mcp.config import get_config
+from obsidian_mcp.storage.audit import append_entry, read_entries
+from obsidian_mcp.storage.policy import ReadPermissionError
+from obsidian_mcp.tools.audit import get_audit_log, log_write
+
+
+def test_log_write_then_get_audit_log(vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "wrote note")
+    entries = get_audit_log()
+    assert len(entries) == 1
+    assert entries[0]["tool"] == "write_note_tool"
+    assert entries[0]["path"] == "a.md"
+    assert entries[0]["summary"] == "wrote note"
+    assert entries[0]["vault"] == "default"
+    assert "timestamp" in entries[0]
+
+
+def test_audit_log_is_stored_outside_vault(tmp_path, vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "wrote note")
+
+    assert not (tmp_path / ".mcp-audit.jsonl").exists()
+
+
+def test_audit_log_rejects_symlink_target(tmp_path):
+    data = tmp_path / "data"
+    locks = tmp_path / "locks"
+    data.mkdir()
+    victim = tmp_path / "victim.txt"
+    victim.write_text("unchanged")
+    audit_path = data / "audit.jsonl"
+    audit_path.symlink_to(victim)
+
+    with pytest.raises(OSError):
+        append_entry(audit_path, locks, "write_note_tool", "a.md", "wrote note")
+    with pytest.raises(OSError):
+        read_entries(audit_path)
+    assert victim.read_text() == "unchanged"
+
+
+def test_get_audit_log_filters_by_path(vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "wrote a")
+    log_write("write_note_tool", "b.md", "wrote b")
+    entries = get_audit_log(path="a.md")
+    assert len(entries) == 1
+    assert entries[0]["path"] == "a.md"
+
+
+def test_get_audit_log_filters_by_tool(vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "wrote a")
+    log_write("delete_note_tool", "a.md", "deleted a")
+    entries = get_audit_log(tool="delete_note_tool")
+    assert len(entries) == 1
+    assert entries[0]["tool"] == "delete_note_tool"
+
+
+def test_get_audit_log_most_recent_first(vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "first")
+    time.sleep(0.01)
+    log_write("write_note_tool", "a.md", "second")
+    entries = get_audit_log()
+    assert entries[0]["summary"] == "second"
+    assert entries[1]["summary"] == "first"
+
+
+def test_get_audit_log_limit(vault_factory):
+    vault_factory({})
+    for i in range(5):
+        log_write("write_note_tool", "a.md", f"write {i}")
+    entries = get_audit_log(limit=2)
+    assert len(entries) == 2
+
+
+def test_get_audit_log_empty_when_no_entries(vault_factory):
+    vault_factory({})
+    assert get_audit_log() == []
+
+
+def test_get_audit_log_scoped_to_path(vault_factory):
+    vault_factory({})
+    log_write("write_note_tool", "a.md", "wrote a")
+    log_write("write_note_tool", "b.md", "wrote b")
+    log_write("patch_frontmatter_tool", "a.md", "patched a")
+    history = get_audit_log(path="a.md")
+    assert len(history) == 2
+    assert all(e["path"] == "a.md" for e in history)
+
+
+def test_get_audit_log_filters_vault_and_legacy_entries(vault_factory):
+    vault_factory({})
+    cfg = get_config()
+    append_entry(
+        cfg.audit_log_path,
+        cfg.lock_path,
+        "write_note_tool",
+        "other.md",
+        "other vault",
+        vault="other",
+    )
+    append_entry(
+        cfg.audit_log_path,
+        cfg.lock_path,
+        "write_note_tool",
+        "legacy.md",
+        "no vault identity",
+    )
+    log_write("write_note_tool", "default.md", "current vault")
+
+    entries = get_audit_log()
+
+    assert [entry["path"] for entry in entries] == ["default.md"]
+
+
+def test_get_audit_log_applies_read_policy_before_limit(vault_factory, monkeypatch):
+    monkeypatch.setenv("DENY_READ_PATHS", "private/")
+    vault_factory({})
+    log_write("write_note_tool", "visible.md", "visible")
+    time.sleep(0.01)
+    log_write("write_note_tool", "private/secret.md", "denied")
+
+    entries = get_audit_log(limit=1)
+
+    assert [entry["path"] for entry in entries] == ["visible.md"]
+    with pytest.raises(ReadPermissionError):
+        get_audit_log(path="private/secret.md")
+
+
+def test_log_write_never_raises_on_bad_vault(monkeypatch):
+    # log_write is best-effort — a config/IO problem must not raise up into
+    # the caller of the write tool it's instrumenting.
+    import obsidian_mcp.config as cfg_mod
+    monkeypatch.delenv("VAULT_PATH", raising=False)
+    cfg_mod._config = None
+    log_write("write_note_tool", "a.md", "should not raise")

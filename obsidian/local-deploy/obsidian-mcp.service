@@ -1,0 +1,29 @@
+[Unit]
+Description=Obsidian MCP knowledge library
+Wants=network-online.target
+After=network-online.target tailscaled.service
+RequiresMountsFor=/mnt/mcp/obsidian /data/obsidian_library /opt/obsidian-python
+
+[Service]
+Type=simple
+User=obsidian-mcp
+Group=obsidian-mcp
+WorkingDirectory=/mnt/mcp/obsidian
+EnvironmentFile=/etc/obsidian-mcp/service.env
+ExecStart=/mnt/mcp/obsidian/.venv/bin/obsidian-remote-mcp
+Restart=on-failure
+RestartSec=5
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/data/obsidian_library /var/lib/obsidian-mcp
+InaccessiblePaths=/data/obsidian_library/.git
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

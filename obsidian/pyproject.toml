@@ -1,0 +1,52 @@
+[project]
+name = "obsidian-remote-mcp"
+version = "2.1.0"
+description = "MCP server for Obsidian vaults — read, write, search, graph, canvas, kanban"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=3.4.7",
+    "python-frontmatter>=1.1",
+    "watchdog>=4.0",
+    "filelock>=3.13",
+    "PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ykoellmann/obsidian-mcp"
+Repository = "https://github.com/ykoellmann/obsidian-mcp"
+Issues = "https://github.com/ykoellmann/obsidian-mcp/issues"
+
+[project.scripts]
+obsidian-remote-mcp = "obsidian_mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/obsidian_mcp"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["obsidian_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
