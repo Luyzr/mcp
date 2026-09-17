@@ -8,7 +8,7 @@ The imported source and deployment templates belong to `Luyzr/mcp`.
 - Source and venv: `/mnt/mcp/obsidian`, `/mnt/mcp/obsidian/.venv`
 - Python 3.12.13: `/opt/obsidian-python/cpython-3.12.13-linux-x86_64-gnu`
 - Vault: `/data/obsidian_library`, private repository `Luyzr/obsidian_library`, branch `master`
-- Unit: `/etc/systemd/system/obsidian-mcp.service` (enabled)
+- Units: `/etc/systemd/system/obsidian-mcp.service` and `obsidian-tunnel.service` (enabled and running)
 - Service identity: `obsidian-mcp`, no login shell
 - Environment and Bearer secret: `/etc/obsidian-mcp/service.env`, root-only mode 0600
 - Audit/locks: `/var/lib/obsidian-mcp`
@@ -17,18 +17,33 @@ The imported source and deployment templates belong to `Luyzr/mcp`.
 
 ## Connect
 
-Streamable HTTP endpoint: `http://100.107.152.83:18076/mcp`.
-Accessible over the encrypted Tailscale network only; no public listener or public HTTPS/tunnel was provisioned.
-Send `Authorization: Bearer <API_KEY>` with the key from the root-only environment file. Do not paste the key into Git or logs.
+Obsidian uses the same OpenAI Secure MCP Tunnel transport as the other server MCPs.
+The backend listens only on `http://127.0.0.1:18076/mcp`; it is not exposed over Tailscale or the public network.
+The outbound tunnel attaches to this authenticated backend, with readiness at `http://127.0.0.1:18077/readyz` and liveness at `/healthz`.
 
-A cloud ChatGPT connector cannot reach this private address directly. A dedicated secure tunnel or HTTPS/OAuth gateway is a separate connection step; no existing MCP tunnel credentials are reused.
+Configured tunnel: `tunnel_6aab5e3f57a4819184e1ed130637ec97` (name `obsidian`), in the same organization/workspace as the existing services. Liveness and readiness verified.
+
+For first-time recovery when `tunnel.env` is absent:
+
+```sh
+python3 /mnt/mcp/obsidian/local-deploy/configure-tunnel.py tunnel_6aab5e3f57a4819184e1ed130637ec97
+systemctl start obsidian-tunnel
+curl --noproxy '*' http://127.0.0.1:18077/readyz
+```
+
+The helper copies the existing Flypig runtime principal into Obsidian's own root-only `tunnel.env`; it does not reuse Flypig's tunnel ID or modify its service. If that principal lacks permission for the new tunnel, replace only Obsidian's runtime key securely.
+`local-deploy/mcp-authorization` holds the backend Authorization header (root-only, Git-ignored).
+`local-deploy/runtime/bin/tunnel-client` is a copy of the established tunnel client (Git-ignored); its hash is recorded in `deployment.json`.
+No API key or authorization file is committed to Git.
+
+After readiness succeeds, select the Obsidian tunnel in the ChatGPT connector settings and verify a real note read. Readiness alone does not prove a cloud tool call succeeded.
 
 ## Operations
 
 ```sh
-systemctl status obsidian-mcp --no-pager
+systemctl status obsidian-mcp obsidian-tunnel --no-pager
 systemctl is-enabled obsidian-mcp
-curl --noproxy '*' http://100.107.152.83:18076/health
+curl --noproxy '*' http://127.0.0.1:18076/health
 /mnt/mcp/obsidian/.venv/bin/python /mnt/mcp/obsidian/local-deploy/smoke-test.py
 journalctl -u obsidian-mcp --no-pager -n 50
 ```
@@ -55,7 +70,7 @@ Do not pull over concurrent writes; coordinate edits before Git merges. A non-fa
 Install the pinned Python with `UV_PYTHON_INSTALL_DIR=/opt/obsidian-python uv python install 3.12.13`.
 From `/mnt/mcp/obsidian`, run `uv sync --frozen --python /opt/obsidian-python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12`.
 Restore the vault repository, dedicated Git key, root-only environment file, service user and owned state directories from secure backup. Keep `.git` root-owned mode 0700 and the vault accessible to `obsidian-mcp`.
-Install the checked-in unit, run `systemctl daemon-reload` and `systemctl enable --now obsidian-mcp`.
+Restore the tunnel runtime binary, root-only `tunnel.env` and `mcp-authorization`. Install both checked-in units, run `systemctl daemon-reload` and `systemctl enable --now obsidian-mcp obsidian-tunnel`.
 Verify `/health` and the smoke test; update `SERVER_INVENTORY.md` after service/deployment changes.
 
 Do not regenerate or print existing credentials during routine upgrades. Keep the lockfile pinned, inspect upstream changes, and rerun relevant upstream tests before deployment.

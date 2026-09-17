@@ -1,0 +1,22 @@
+[Unit]
+Description=OpenAI Secure MCP Tunnel for Obsidian
+Wants=network-online.target
+Requires=obsidian-mcp.service
+After=network-online.target obsidian-mcp.service
+ConditionPathExists=/mnt/mcp/obsidian/local-deploy/tunnel.env
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/mcp/obsidian/local-deploy
+EnvironmentFile=/mnt/mcp/obsidian/local-deploy/tunnel.env
+ExecStart=/mnt/mcp/obsidian/local-deploy/runtime/bin/tunnel-client run --mcp.server-url http://127.0.0.1:18076/mcp --mcp.extra-headers "Authorization: file:/mnt/mcp/obsidian/local-deploy/mcp-authorization" --mcp.discovery-extra-headers "Authorization: file:/mnt/mcp/obsidian/local-deploy/mcp-authorization" --health.listen-addr 127.0.0.1:18077
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

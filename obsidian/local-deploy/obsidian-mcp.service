@@ -1,7 +1,7 @@
 [Unit]
 Description=Obsidian MCP knowledge library
 Wants=network-online.target
-After=network-online.target tailscaled.service
+After=network-online.target
 RequiresMountsFor=/mnt/mcp/obsidian /data/obsidian_library /opt/obsidian-python
 
 [Service]
