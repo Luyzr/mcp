@@ -69,7 +69,8 @@ async def run_cli(arguments: list[str]) -> dict:
         return {'exit_code': code, 'data': payload, 'stderr': stderr}
     return {'exit_code': code, 'stdout': stdout, 'stderr': stderr}
 
-@server.tool(name=CONFIG['name'] + '_help', annotations=ToolAnnotations(readOnlyHint=True))
+@server.tool(name=CONFIG['name'] + '_help', annotations=ToolAnnotations(
+    readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False))
 async def cli_help(command: str = '') -> dict:
     """Show CLI commands or exact arguments for one command. Call before using unfamiliar options."""
     if command and command not in CONFIG['commands']:
@@ -84,7 +85,7 @@ def register(command, description, readonly):
         return await run_cli([command, *args])
     server.add_tool(invoke, name=CONFIG['name'] + '_' + command.replace('-', '_'),
                     description=description + ' Pass CLI arguments as a string array; consult the help tool for flags.',
-                    annotations=ToolAnnotations(readOnlyHint=readonly, destructiveHint=not readonly,
+                    annotations=ToolAnnotations(readOnlyHint=readonly, destructiveHint=False,
                                                 idempotentHint=readonly, openWorldHint=True))
 
 for command, settings in CONFIG['commands'].items():
