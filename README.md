@@ -2,20 +2,21 @@
 
 [English](README_EN.md)
 
-本私有仓库管理六组 MCP 服务的源码、部署配置、验证脚本和插件素材。服务运行在 Linux 服务器，由 systemd 管理，统一通过 **OpenAI Secure MCP Tunnel** 接入。Obsidian 笔记单独保存在 [obsidian_library](https://github.com/Luyzr/obsidian_library)，不与服务代码混放。
+本私有仓库管理MCP 服务的源码、部署配置、验证脚本和插件素材。服务运行在 Linux 服务器，由 systemd 管理，统一通过 **OpenAI Secure MCP Tunnel** 接入。Obsidian 笔记单独保存在 [obsidian_library](https://github.com/Luyzr/obsidian_library)，不与服务代码混放。
 
 ## 服务
 
 | 服务 | 版本 | 用途 | 目录 |
 | --- | --- | --- | --- |
 | 小红书 | `xiaohongshu-mcp v2.5.0` | 搜索、阅读和管理小红书内容 | [xiaohongshu](xiaohongshu/) |
-| 高德地图 | `@amap-lbs/amap-gui 1.0.3` | 地点搜索和路线规划 | [gaode](gaode/) |
 | Playwright | `@playwright/mcp 0.0.81` | 浏览器操作与网页验证 | [playwright](playwright/) |
 | Firecrawl | `firecrawl-mcp 3.24.1` | 网页搜索、抓取与内容提取 | [firecrawl](firecrawl/) |
 | 飞猪 | `@fly-ai/flyai-cli 1.0.16` | 出行信息搜索 | [flypig](flypig/) |
 | Obsidian | `obsidian-remote-mcp 2.1.0` | 笔记读写、搜索、链接和标签管理 | [obsidian](obsidian/) |
 
 版本为仓库当前部署记录，不代表上游最新版本。
+
+高德 MCP 已迁移至独立主机，vm-souler 上的旧部署和开机自启项已移除。
 
 ## 部署与访问
 

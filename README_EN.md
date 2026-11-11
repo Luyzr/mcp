@@ -2,20 +2,21 @@
 
 [中文](README.md)
 
-This private repository manages source code, deployment configuration, verification scripts, and plugin assets for six MCP services. Services run on a Linux server under systemd and use **OpenAI Secure MCP Tunnel** for client access. Obsidian notes live separately in [obsidian_library](https://github.com/Luyzr/obsidian_library).
+This private repository manages source code, deployment configuration, verification scripts, and plugin assets for the MCP services listed below. Services run on a Linux server under systemd and use **OpenAI Secure MCP Tunnel** for client access. Obsidian notes live separately in [obsidian_library](https://github.com/Luyzr/obsidian_library).
 
 ## Services
 
 | Service | Recorded version | Purpose | Directory |
 | --- | --- | --- | --- |
 | Xiaohongshu | `xiaohongshu-mcp v2.5.0` | Search, read, and manage content | [xiaohongshu](xiaohongshu/) |
-| Amap/Gaode | `@amap-lbs/amap-gui 1.0.3` | Place search and routing | [gaode](gaode/) |
 | Playwright | `@playwright/mcp 0.0.81` | Browser automation and verification | [playwright](playwright/) |
 | Firecrawl | `firecrawl-mcp 3.24.1` | Web search and content extraction | [firecrawl](firecrawl/) |
 | Flypig | `@fly-ai/flyai-cli 1.0.16` | Travel information search | [flypig](flypig/) |
 | Obsidian | `obsidian-remote-mcp 2.1.0` | Notes, search, links, and tags | [obsidian](obsidian/) |
 
 Versions reflect deployment records, not necessarily the latest upstream releases.
+
+Gaode MCP has moved to a dedicated host. Its legacy deployment and startup units on vm-souler have been removed.
 
 ## Deployment and access
 
